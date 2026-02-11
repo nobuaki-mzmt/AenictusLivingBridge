@@ -77,12 +77,23 @@
   df_traffic$bridge <- bridge
   df_traffic$bridge_end <- bridge_end
   
+  library(forecast)
+  
+  ggAcf(df_traffic$traffic) +
+    theme_classic() +
+    labs(x = "Lags (sec)", y = "ACF", title = "") +
+    scale_y_continuous(limits = c(-0.5, 0.5))+
+    theme(aspect.ratio = 3/4)
+  ggsave("output/acf_traffic.pdf", device = cairo_pdf, family = "Arial", 
+         width = 6, height = 4)
+  
+  min((df_traffic %>% filter(bridge))$N_inside)
   
   df_traffic$time_group <- floor(df_traffic$Time_bin / 11)
   df_traffic_sub <- df_traffic %>%
     group_by(time_group) %>%
     summarise(N_inside = mean(N_inside),
-              traffic = mean(traffic),
+              traffic = sum(traffic),
               in_traffic = sum(in_traffic),
               out_traffic = sum(out_traffic),
               bridge = round(mean(bridge)))
@@ -97,6 +108,7 @@ ggplot(df_time, aes(x = Time_bin)) +
             fill = viridis(6)[5], alpha = 0.4, inherit.aes = FALSE)+
   geom_line(aes(y = N_inside)) +
   geom_line(aes(y=income + outcome), col=viridis(2)[1])+
+  geom_hline(yintercept = 7) +
   labs(title = "Number of individuals in area", 
        x = "Time (sec)", y = "Individuals")+
   scale_x_continuous(breaks = c(0,200,400)) +
@@ -116,18 +128,20 @@ ggplot(df_traffic_sub, aes(x = N_inside, y = traffic,
   scale_color_viridis(discrete = T, end = .5) +
   theme_classic() + 
   theme(legend.position = "none", aspect.ratio = 3/4) +
-  scale_x_continuous(limits = c(0,30))+
-  scale_y_continuous(limits = c(0,10), breaks = c(0,5,10)) +
+  #scale_x_continuous(limits = c(0,30))+
+  #scale_y_continuous(limits = c(0,10), breaks = c(0,5,10)) +
   stat_smooth(method = "lm")+
-  xlab("Number of ants near the gap")+
-  ylab("Traffic (ants/sec)")
+  xlab("Mean number of ants near the gap")+
+  ylab("Traffic (ants passed during a time block)")
 
-ggsave("output/relationship.pdf")
+ggsave("output/relationship.pdf", device = cairo_pdf, family = "Arial", width = 6, height = 4)
 
 
-r <- lm(traffic ~ N_inside * bridge, 
+r <- glm(traffic ~ N_inside * bridge, family = poisson(link = "log"),
         data = df_traffic_sub)
-Anova(r)
+Anova(r, type = "II")
+summary(r)
+confint(r)
 
 
 
