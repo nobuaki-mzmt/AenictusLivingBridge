@@ -1,7 +1,12 @@
 # README
 
-This repository provides access to the data and source code used for the manuscript, Independent evolution of a living bridge in the Old World army ant lineage. 
-This study investigates the living bridge formation in an old-world army ant, _Aenictus_ sp. A video clip was manually analyzed using an event logging software, BORIS (https://www.boris.unito.it/). 
+This repository provides access to the data and source code used for the manuscript, **Independent evolution of a living bridge in the Old World army ant lineage**.
+
+**Nobuaki Mizumoto, Kôichi Arimoto, Clement Het Kaliang, Taisuke Kanao**
+Accepted at _The Science of Nature_  
+Paper DOI: [10.1007/s00114-026-02085-4](https://doi.org/10.1007/s00114-026-02085-4)
+
+This study investigates the living bridge formation in an old-world army ant, _Aenictus glabrinotum_. A video clip was manually analyzed using an event logging software, BORIS (https://www.boris.unito.it/). 
 
 ## Table of Contents
 - analysis
@@ -10,7 +15,6 @@ This study investigates the living bridge formation in an old-world army ant, _A
   - `result.csv` - results output from BORIS
  - `code.R` - R script to analyze the data.
  - output - includes PDF figures produced in R during data visualization and analysis. 
-- draft - draft related files
 
 ## Session information
 ```
